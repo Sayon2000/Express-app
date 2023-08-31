@@ -4,37 +4,27 @@ const bodyParser = require('body-parser')
 const app = express();
 
 
+const adminRoutes = require('./routes/admin')
+const shopRoutes = require('./routes/shop')
+
 app.use(bodyParser.urlencoded({extended : false}))
 
-app.get('/add-product',(req,res,next)=>{
-    console.log("in another middleware")
-    const fileName ='form.html'
+
+app.use('/admin',adminRoutes)
+
+app.use('/shop',shopRoutes)
+
+app.use((req,res)=>{
+    const fileName = 'notFound.html'
     const options = {
-        root: path.join(__dirname)
+        root: path.join(__dirname , '/web_pages/')
     };
- 
-    return res.sendFile(fileName, options, function (err) {
+    return res.status(404).sendFile(fileName, options, function (err) {
         if (err) {
             next(err);
         } 
 
 })
 })
-
-app.post('/product' , (req,res)=>{
-
-    console.log(req.body.title)
-    console.log(req.body.size)
-    return res.redirect('/')
-})
-
-
-app.use('/',(req,res,next)=>{
-    console.log("in another middleware")
-    res.send('<h1>Hello to node js</h1>')
-
-})
-
-
 
 app.listen(4000)
